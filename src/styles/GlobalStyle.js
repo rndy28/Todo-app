@@ -13,7 +13,6 @@ export const GlobalStyle = createGlobalStyle`
     font-family: 'Josefin Sans', BlinkMacSystemFont, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 18px;
     font-weight: 400;
-    transition: background-color 200ms ease;
     background-color: ${props => props.theme === 'light' ? lightTheme.body : darkTheme.body};
     }
     input,

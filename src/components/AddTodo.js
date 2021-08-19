@@ -1,5 +1,6 @@
 import { useContext, useState } from "react"
 import styled from "styled-components"
+import { nanoid } from "nanoid"
 import { ThemeContext } from "../context/ThemeContext"
 import checkIcon from '../images/icon-check.svg'
 import { darkTheme, lightTheme } from "../theme/theme"
@@ -10,10 +11,11 @@ display: flex;
 align-items: center;
 justify-content: center;
 margin-block: 1rem;
-border-radius: 0.4rem;
+border-radius: 0.5rem;
 padding: 1.1rem ;
 background-color: ${props => props.theme === 'light' ? lightTheme.todoSurface : darkTheme.todoSurface};
 `
+
 
 const Input = styled.input`
 width: 100%;
@@ -32,12 +34,13 @@ border: 1px solid ${props => props.theme === 'light' ? 'hsl(0, 0%, 70%)' : 'hsl(
 cursor: pointer;
 margin-bottom: 0.2rem;
 &:checked {
-    background: url(${checkIcon}) center no-repeat pink;
+    border: none;
+    background: url(${checkIcon}) center center no-repeat, linear-gradient(to right, hsl(192, 100%, 67%), hsl(280, 87%, 65%)) !important;
 }
 `
 
 const AddTodo = ({ setTodos }) => {
-    const id = Math.floor(Math.random() * 10000) + 1
+    const id = nanoid(10)
     const [text, setText] = useState('')
     const [completed, setCompleted] = useState(false)
     const { theme } = useContext(ThemeContext)

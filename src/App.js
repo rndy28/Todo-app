@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import AddTodo from './components/AddTodo';
 import Footer from "./components/Footer";
@@ -18,12 +19,11 @@ bottom: 13rem;
 const Wrapper = styled.div`
 box-shadow: ${props => props.theme === 'light' && 'rgba(194, 195, 214, 0.5) 0px 35px 50px -15px'};
 border-radius: 0.5rem;
-overflow: hidden;
-position: relative;
+background-color: ${props => props.theme === 'light' ? lightTheme.todoSurface : darkTheme.todoSurface};
 `
 
 const Banner = styled.div`
-    transition: background 200ms ease;
+transition: background 200ms ease;
 background: url(${props => props.theme === 'light' ? lightTheme.mobileBanner : darkTheme.mobileBanner}) center no-repeat;
 background-size: cover;
 object-fit: cover;
@@ -34,8 +34,6 @@ min-height: 15rem;
   min-height: 20rem;
 }
 `
-
-
 const filterMap = {
   All: () => true,
   Active: todo => !todo.completed,
@@ -50,6 +48,13 @@ const App = () => {
   const [filter, setFilter] = useState('All');
   const remainTodos = todos.filter(filterMap['Active'])
 
+  const handleOnDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(todos);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setTodos(items);
+  }
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos))
@@ -73,28 +78,38 @@ const App = () => {
       : `${remainTodos.length} items left`;
   return (
     <>
-      <GlobalStyle theme={theme}/>
-        <Banner theme={theme}/>
-        <Container>
-          <Nav theme={theme} switchTheme={switchTheme}/>
-          <AddTodo setTodos={setTodos} todos={todos} />
-          <Wrapper theme={theme}>
-            <Todos
-              filterMap={filterMap}
-              filter={filter}
-              todos={todos}
-              toggleCompleted={toggleCompleted}
-              deleteTodo={deleteTodo}
-              />
-            <Footer
-              remainingTodos={remainingTodos}
-              onClearCompleted={clearCompleted}
-              filterNames={filterNames}
-              setFilter={setFilter}
-              filter={filter}
-            />
-          </Wrapper>
-        </Container>
+      <GlobalStyle theme={theme} />
+      <Banner theme={theme} />
+      <Container>
+        <Nav theme={theme} switchTheme={switchTheme} />
+        <AddTodo setTodos={setTodos} todos={todos} />
+        <Wrapper theme={theme}>
+          <DragDropContext onDragEnd={handleOnDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  <Todos
+                    filterMap={filterMap}
+                    filter={filter}
+                    todos={todos}
+                    toggleCompleted={toggleCompleted}
+                    deleteTodo={deleteTodo}
+                  />
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+          <Footer
+            remainingTodos={remainingTodos}
+            onClearCompleted={clearCompleted}
+            filterNames={filterNames}
+            setFilter={setFilter}
+            filter={filter}
+            remainTodos={remainTodos.length}
+          />
+        </Wrapper>
+      </Container>
     </>
   )
 }

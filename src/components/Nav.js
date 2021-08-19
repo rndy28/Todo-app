@@ -22,6 +22,7 @@ const ToggleTheme = styled.span`
 background: url(${props => props.theme === 'light' ? moonIcon : sunIcon}) right no-repeat;
 width: 3rem;
 height: 3rem;
+cursor: pointer;
 `
 
 export const Nav = ({ theme, switchTheme }) => {

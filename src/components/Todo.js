@@ -5,13 +5,30 @@ import deleteIcon from '../images/icon-cross.svg'
 import { darkTheme, lightTheme } from "../theme/theme"
 import { Checkbox } from './AddTodo'
 
+
+const DeleteTodo = styled.span`
+background: url(${deleteIcon}) no-repeat center;
+width: 2rem;
+height: 2rem;
+max-width: 100%;
+@media(min-width: 800px){
+opacity: 0;
+transition: opacity 250ms ease-in;
+} 
+`
+
+
 const Container = styled.div`
-background-color: ${props => props.theme === 'light' ? lightTheme.todoSurface : darkTheme.todoSurface};
 display: flex;
 justify-content: space-between;
 align-items: center;
 position: relative;
+cursor: pointer;
 padding: 1.3rem 1.1rem;
+
+&:hover ${DeleteTodo} {
+    opacity: 1;
+}
 &::after {
     content: '';
     position: absolute;
@@ -33,31 +50,20 @@ display: block;
 white-space: nowrap;
 text-overflow: ellipsis;
 overflow: hidden;
+transform: unset;
 text-decoration: ${props => props.completed && 'line-through'};
 ${({ completed }) => completed && css`
 color: ${props => props.theme === "light" ? "hsl(233, 11%, 84%)" : "hsl(233, 14%, 35%)"};
-transition: all 300ms ease;
+transition: all 250ms ease;
 `}
 `
 
-const DeleteTodo = styled.span`
-background: url(${deleteIcon}) no-repeat center;
-width: 2rem;
-height: 2rem;
-max-width: 100%;
-@media(min-width: 800px){
-    opacity: 0;
-transition: opacity 300ms ease-in;
-&:hover {
-    opacity: 1;
-}
-} 
-`
+
 
 const Todo = ({ todo, onDelete, onToggle }) => {
     const { theme } = useContext(ThemeContext)
     return (
-        <Container theme={theme} >
+        <Container theme={theme}>
             <Checkbox type='checkbox' onChange={() => onToggle(todo.id)} checked={todo.completed} />
             <Wrapper><Text completed={todo.completed} theme={theme}>{todo.text}</Text></Wrapper>
             <DeleteTodo onClick={() => onDelete(todo.id)} />

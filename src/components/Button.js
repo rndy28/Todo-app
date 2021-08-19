@@ -4,10 +4,12 @@ import { darkTheme, lightTheme } from "../theme/theme"
 
 const StyledButton = styled.button`
 cursor: pointer;
-transition: color 500ms ease;
     color: ${props => props["aria-pressed"] ? 'hsl(220, 98%, 61%)' : 'hsl(236, 9%, 61%)'};
-    &:hover {
+    transition: ${props => props["aria-pressed"] || 'color 300ms ease'};
+    @media(min-width: 800px) {
+        &:hover {
         color:  ${props => props.theme === 'light' ? lightTheme.optionsText_hover : darkTheme.optionsText_hover};
+    }
     }
 `
 
