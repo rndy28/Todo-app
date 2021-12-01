@@ -1,10 +1,10 @@
+import { nanoid } from "nanoid"
 import { useContext, useState } from "react"
 import styled from "styled-components"
-import { nanoid } from "nanoid"
 import { ThemeContext } from "../context/ThemeContext"
-import checkIcon from '../images/icon-check.svg'
+import { TodoContext } from "../context/TodoContext"
+import checkIcon from "../images/icon-check.svg"
 import { darkTheme, lightTheme } from "../theme/theme"
-
 
 const Form = styled.form`
 display: flex;
@@ -39,18 +39,18 @@ margin-bottom: 0.2rem;
 }
 `
 
-const AddTodo = ({ setTodos }) => {
-    const id = nanoid(10)
+const AddTodo = () => {
     const [text, setText] = useState('')
     const [completed, setCompleted] = useState(false)
     const { theme } = useContext(ThemeContext)
+    const { dispatch } = useContext(TodoContext)
     const onSubmit = (e) => {
         e.preventDefault()
         if (!text) {
             alert('Please add a todo')
             return
         }
-        setTodos(prevTodos => [...prevTodos, { id, text, completed }])
+        dispatch({ type: 'ADD_TODO', payload: { id: nanoid(), text, completed } })
         setCompleted(false)
         setText('')
     }

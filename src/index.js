@@ -1,13 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { ThemeProvider } from './context/ThemeContext'
-
+import { ThemeProvider } from './context/ThemeContext';
+import { TodoProvider } from './context/TodoContext';
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider>
-      <App />
+      <TodoProvider>
+        <App />
+      </TodoProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')

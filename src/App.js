@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import AddTodo from './components/AddTodo';
@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import { Nav } from "./components/Nav";
 import Todos from "./components/Todos";
 import { ThemeContext } from "./context/ThemeContext";
+import { TodoContext } from './context/TodoContext';
 import { GlobalStyle } from "./styles/GlobalStyle";
 import { darkTheme, lightTheme } from "./theme/theme";
 
@@ -42,37 +43,19 @@ const filterMap = {
 const filterNames = Object.keys(filterMap)
 
 const App = () => {
-  const [todos, setTodos] = useState(() =>
-    JSON.parse(localStorage.getItem('todos')) || []
-  )
+  const { todos, dispatch } = useContext(TodoContext);
+  const { theme, switchTheme } = useContext(ThemeContext)
   const [filter, setFilter] = useState('All');
-  const remainTodos = todos.filter(filterMap['Active'])
+  const remainTodos = todos.filter(filterMap['Active']);
 
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
     const items = Array.from(todos);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-    setTodos(items);
+    dispatch({ type: 'SET_TODO_ORDER', payload: items });
   }
 
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos))
-  }, [todos])
-  const { theme, switchTheme } = useContext(ThemeContext)
-
-
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id))
-  }
-
-  const toggleCompleted = (id) => {
-    setTodos(todos.map((todo) => todo.id === id
-      ? { ...todo, completed: !todo.completed } : todo))
-  }
-  const clearCompleted = () => {
-    setTodos(todos.filter(todo => todo.completed === false))
-  }
   const remainingTodos = remainTodos.length === 0 ? 'no todo'
     : remainTodos.length === 1 ? `${remainTodos.length} item left`
       : `${remainTodos.length} items left`;
@@ -82,7 +65,7 @@ const App = () => {
       <Banner theme={theme} />
       <Container>
         <Nav theme={theme} switchTheme={switchTheme} />
-        <AddTodo setTodos={setTodos} todos={todos} />
+        <AddTodo />
         <Wrapper theme={theme}>
           <DragDropContext onDragEnd={handleOnDragEnd}>
             <Droppable droppableId="droppable">
@@ -92,8 +75,8 @@ const App = () => {
                     filterMap={filterMap}
                     filter={filter}
                     todos={todos}
-                    toggleCompleted={toggleCompleted}
-                    deleteTodo={deleteTodo}
+                    toggleCompleted={(id) => dispatch({ type: 'TOGGLE_COMPLETED', payload: id })}
+                    deleteTodo={(id) => dispatch({ type: 'DELETE_TODO', payload: id })}
                   />
                   {provided.placeholder}
                 </div>
@@ -102,7 +85,7 @@ const App = () => {
           </DragDropContext>
           <Footer
             remainingTodos={remainingTodos}
-            onClearCompleted={clearCompleted}
+            onClearCompleted={() => dispatch({ type: 'CLEAR_COMPLETED' })}
             filterNames={filterNames}
             setFilter={setFilter}
             filter={filter}
