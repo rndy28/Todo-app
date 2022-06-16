@@ -1,7 +1,7 @@
-import darkBanner from '../images/bg-desktop-dark.jpg';
-import lightBanner from '../images/bg-desktop-light.jpg';
-import mobileDarkBanner from '../images/bg-mobile-dark.jpg';
-import mobileLightBanner from '../images/bg-mobile-light.jpg';
+import darkBanner from 'assets/bg-desktop-dark.jpg';
+import lightBanner from 'assets/bg-desktop-light.jpg';
+import mobileDarkBanner from 'assets/bg-mobile-dark.jpg';
+import mobileLightBanner from 'assets/bg-mobile-light.jpg';
 
 export const lightTheme = {
     body: 'hsl(0, 0%, 98%)',
@@ -13,7 +13,7 @@ export const lightTheme = {
     border: 'hsl(236, 33%, 92%)',
     optionsText: 'hsl(236, 9%, 61%)',
     optionsText_hover: 'hsl(235, 19%, 35%)',
-}
+};
 export const darkTheme = {
     body: 'hsl(235, 21%, 11%)',
     banner: darkBanner,
@@ -24,4 +24,4 @@ export const darkTheme = {
     border: 'hsl(237, 14%, 26%)',
     optionsText: 'hsl(234, 11%, 52%)',
     optionsText_hover: 'hsl(236, 33%, 92%)',
-}
+};
